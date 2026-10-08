@@ -1,5 +1,7 @@
+import 'package:billing_app/core/constants/app_currency.dart';
 import 'package:billing_app/core/widgets/input_label.dart';
 import 'package:billing_app/core/widgets/primary_button.dart';
+import 'package:billing_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -43,7 +45,8 @@ class _AddProductPageState extends State<AddProductPage> {
       if (existingProduct != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Product with barcode "$_barcode" already exists!'),
+            content: Text(AppLocalizations.of(context)
+                .barcodeAlreadyExists(_barcode)),
             backgroundColor: Colors.red,
           ),
         );
@@ -69,12 +72,12 @@ class _AddProductPageState extends State<AddProductPage> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.chevron_left,
+            icon: Icon(Icons.arrow_back,
                 size: 28, color: Theme.of(context).primaryColor),
             onPressed: () => context.pop(),
           ),
-          title: const Text('Add Product',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          title: Text(AppLocalizations.of(context).addProductTitle,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           centerTitle: true,
         ),
         body: SafeArea(
@@ -85,18 +88,19 @@ class _AddProductPageState extends State<AddProductPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const InputLabel(text: 'Barcode'),
+                  InputLabel(text: AppLocalizations.of(context).barcodeLabel),
                   Row(
                     children: [
                       Expanded(
                         child: TextFormField(
                           key: ValueKey(_barcode),
                           initialValue: _barcode,
-                          decoration: const InputDecoration(
-                            hintText: 'Scan or enter barcode',
+                          decoration: InputDecoration(
+                            hintText:
+                                AppLocalizations.of(context).scanOrEnterBarcode,
                           ),
-                          validator:
-                              AppValidators.required('Please enter a barcode'),
+                          validator: AppValidators.required(
+                              AppLocalizations.of(context).pleaseEnterBarcode),
                           onSaved: (value) => _barcode = value!,
                         ),
                       ),
@@ -116,32 +120,41 @@ class _AddProductPageState extends State<AddProductPage> {
                     ],
                   ),
                   const SizedBox(height: 6),
-                  const Text('Tap the icon to open camera scanner',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF4C669A))),
+                  Text(AppLocalizations.of(context).tapIconToScan,
+                      style: const TextStyle(
+                          fontSize: 12, color: Color(0xFF4C669A))),
                   const SizedBox(height: 24),
-                  const InputLabel(text: 'Product Name'),
+                  InputLabel(
+                      text: AppLocalizations.of(context).productNameLabel),
                   TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'e.g. Basmati Rice',
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context).productNameHint,
                     ),
                     textCapitalization: TextCapitalization.words,
-                    validator: AppValidators.required('Please enter a name'),
+                    validator: AppValidators.required(
+                        AppLocalizations.of(context).pleaseEnterName),
                     onSaved: (value) => _name = value!,
                   ),
                   const SizedBox(height: 24),
-                  const InputLabel(text: 'Price'),
+                  InputLabel(text: AppLocalizations.of(context).priceLabel),
                   TextFormField(
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                     decoration: const InputDecoration(
                       hintText: '0.00',
-                      prefixText: '₹ ',
+                      prefixText: '${AppCurrency.symbol} ',
                       prefixStyle: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.black),
                     ),
-                    validator: AppValidators.price,
+                    validator: AppValidators.price(
+                      empty: AppLocalizations.of(context).pleaseEnterPrice,
+                      invalid:
+                          AppLocalizations.of(context).pleaseEnterValidNumber,
+                      negative:
+                          AppLocalizations.of(context).priceCannotBeNegative,
+                    ),
                     onSaved: (value) => _price = double.parse(value!),
                   ),
                 ],
@@ -152,7 +165,7 @@ class _AddProductPageState extends State<AddProductPage> {
         bottomNavigationBar: PrimaryButton(
           onPressed: _submit,
           icon: Icons.add_circle,
-          label: 'Add Product',
+          label: AppLocalizations.of(context).addProductButton,
         ));
   }
 }

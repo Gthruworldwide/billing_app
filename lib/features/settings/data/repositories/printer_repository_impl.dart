@@ -1,5 +1,6 @@
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import '../../../../core/data/hive_database.dart';
+import '../../../../core/l10n/app_message_keys.dart';
 import '../../../../core/utils/printer_helper.dart';
 import '../../domain/repositories/printer_repository.dart';
 
@@ -11,7 +12,7 @@ class PrinterRepositoryImpl implements PrinterRepository {
     if (await _printerHelper.checkPermission()) {
       return await _printerHelper.getBondedDevices();
     }
-    throw Exception('Bluetooth permission denied');
+    throw Exception(AppMessageKeys.bluetoothPermissionDenied);
   }
 
   @override

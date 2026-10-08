@@ -8,14 +8,14 @@ class AppTheme {
   static const Color surfaceColor = Colors.white;
   static const Color errorColor = Color(0xFFB00020);
 
- static final TextTheme textTheme = GoogleFonts.ibmPlexSansTextTheme().copyWith(
-  bodyLarge: GoogleFonts.ibmPlexSans(
-    fontSize: 15,
-    fontWeight: FontWeight.w500,
-    color: Colors.black,
-  ),
- 
-);
+  static final TextTheme textTheme =
+      GoogleFonts.ibmPlexSansArabicTextTheme().copyWith(
+    bodyLarge: GoogleFonts.ibmPlexSansArabic(
+      fontSize: 15,
+      fontWeight: FontWeight.w500,
+      color: Colors.black,
+    ),
+  );
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,

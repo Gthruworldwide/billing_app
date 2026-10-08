@@ -1,4 +1,7 @@
+import 'package:billing_app/core/constants/app_currency.dart';
 import 'package:billing_app/core/widgets/primary_button.dart';
+import 'package:billing_app/core/utils/currency_format.dart';
+import 'package:billing_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -28,13 +31,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Checkout',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            title: Text(AppLocalizations.of(context).checkoutTitle,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: IconButton(
-              icon: Icon(Icons.chevron_left,
+              icon: Icon(Icons.arrow_back,
                   size: 28, color: Theme.of(context).primaryColor),
               onPressed: () {
                 context.read<BillingBloc>().add(ClearCartEvent());
@@ -45,8 +48,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
           body: BlocConsumer<BillingBloc, BillingState>(
             listener: (context, state) {
               if (state.printSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('Printed successfully'),
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content:
+                        Text(AppLocalizations.of(context).printedSuccessfully),
                     backgroundColor: Colors.green));
                 // context.read<BillingBloc>().add(ClearCartEvent());
                 // context.go('/');
@@ -56,7 +60,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               return BlocBuilder<ShopBloc, ShopState>(
                   builder: (context, shopState) {
                 String upiId = '';
-                String shopName = 'Shop';
+                String shopName = AppLocalizations.of(context).defaultShopName;
 
                 if (shopState is ShopLoaded) {
                   upiId = shopState.shop.upiId;
@@ -104,11 +108,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       ),
                                       children: [
                                         _buildHeaderCell(
-                                            'Product Name', TextAlign.left),
+                                            AppLocalizations.of(context)
+                                                .columnProductName,
+                                            TextAlign.start),
                                         _buildHeaderCell(
-                                            'Price', TextAlign.right),
+                                            AppLocalizations.of(context)
+                                                .columnPrice,
+                                            TextAlign.end),
                                         _buildHeaderCell(
-                                            'Total', TextAlign.right),
+                                            AppLocalizations.of(context)
+                                                .columnTotal,
+                                            TextAlign.end),
                                       ],
                                     ),
                                     // Items rows
@@ -117,15 +127,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         children: [
                                           _buildDataCell(
                                             '${item.quantity} x ${item.product.name}',
-                                            TextAlign.left,
+                                            TextAlign.start,
                                           ),
                                           _buildDataCell(
-                                              '₹${item.product.price.toStringAsFixed(2)}',
-                                              TextAlign.right,
+                                              formatEgp(item.product.price),
+                                              TextAlign.end,
                                               isSubtitle: true),
                                           _buildDataCell(
-                                              '₹${item.total.toStringAsFixed(2)}',
-                                              TextAlign.right,
+                                              formatEgp(item.total),
+                                              TextAlign.end,
                                               isBold: true),
                                         ],
                                       );
@@ -173,9 +183,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 upiId.isNotEmpty
                                     ? Column(
                                         children: [
-                                          const Text(
-                                            'Scan to Pay',
-                                            style: TextStyle(
+                                          Text(
+                                            AppLocalizations.of(context)
+                                                .scanToPay,
+                                            style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black87,
@@ -188,7 +199,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                             height: 180,
                                             child: PrettyQrView.data(
                                               data:
-                                                  'upi://pay?pa=$upiId&pn=$shopName&am=${billingState.totalAmount.toStringAsFixed(2)}&cu=INR',
+                                                  'upi://pay?pa=$upiId&pn=$shopName&am=${billingState.totalAmount.toStringAsFixed(2)}&cu=${AppCurrency.code}',
                                             ),
                                           ),
                                         ],
@@ -200,7 +211,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'GRAND TOTAL',
+                                      AppLocalizations.of(context).grandTotal,
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
@@ -209,7 +220,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       ),
                                     ),
                                     Text(
-                                      '₹${billingState.totalAmount.toStringAsFixed(2)}',
+                                      formatEgp(billingState.totalAmount),
                                       style: const TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
@@ -234,13 +245,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         footer: shopState.shop.footerText));
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content:
-                                            Text('Shop details not loaded'),
+                                    SnackBar(
+                                        content: Text(
+                                            AppLocalizations.of(context)
+                                                .shopDetailsNotLoaded),
                                         backgroundColor: Colors.red));
                               }
                             },
-                            label: 'Print Receipt',
+                            label: AppLocalizations.of(context).printReceipt,
                             icon: Icons.print,
                             isLoading: billingState.isPrinting,
                           ),

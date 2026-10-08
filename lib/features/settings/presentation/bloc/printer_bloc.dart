@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/l10n/app_message_keys.dart';
 import '../../domain/repositories/printer_repository.dart';
 import 'printer_event.dart';
 import 'printer_state.dart';
@@ -33,7 +34,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
       if (devices.isEmpty) {
         emit(state.copyWith(
           status: PrinterStatus.scanFailure,
-          errorMessage: 'No paired devices found.',
+          errorMessage: AppMessageKeys.noPairedDevices,
           devices: [],
         ));
         return;
@@ -59,14 +60,14 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
       if (!connected) {
         emit(state.copyWith(
           status: PrinterStatus.scanFailure,
-          errorMessage: 'Could not connect to any paired device.',
+          errorMessage: AppMessageKeys.couldNotConnectPaired,
           devices: devices,
         ));
       }
     } catch (e) {
       emit(state.copyWith(
         status: PrinterStatus.scanFailure,
-        errorMessage: e.toString(),
+        errorMessage: _errorKey(e),
       ));
     }
   }
@@ -83,7 +84,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     } catch (e) {
       emit(state.copyWith(
         status: PrinterStatus.scanFailure,
-        errorMessage: e.toString(),
+        errorMessage: _errorKey(e),
       ));
     }
   }
@@ -102,7 +103,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     } else {
       emit(state.copyWith(
         status: PrinterStatus.connectionFailure,
-        errorMessage: 'Failed to connect to printer',
+        errorMessage: AppMessageKeys.failedConnectPrinter,
       ));
     }
   }
@@ -122,5 +123,13 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     emit(state.copyWith(status: PrinterStatus.testPrinting));
     await repository.testPrint(event.shopName);
     emit(state.copyWith(status: PrinterStatus.scanSuccess));
+  }
+
+  String _errorKey(Object e) {
+    final text = e.toString();
+    if (text.contains(AppMessageKeys.bluetoothPermissionDenied)) {
+      return AppMessageKeys.bluetoothPermissionDenied;
+    }
+    return text;
   }
 }

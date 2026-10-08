@@ -1,0 +1,134 @@
+{
+  "@@locale": "ar",
+  "appTitle": "تطبيق الفواتير",
+  "reviewOrder": "مراجعة الطلب",
+  "cameraOffTitle": "الكاميرا متوقفة",
+  "cameraOffBody": "شغّل الكاميرا لبدء مسح الباركود وإضافة الأصناف تلقائياً.",
+  "turnOnCamera": "تشغيل الكاميرا",
+  "scannedItems": "الأصناف الممسوحة",
+  "itemsTotalCount": "{count} أصناف",
+  "@itemsTotalCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "totalPrice": "الإجمالي",
+  "emptyCartTitle": "القائمة فارغة",
+  "emptyCartBody": "ستظهر الأصناف هنا عند مسحها بالكاميرا أعلاه.",
+  "checkoutTitle": "الدفع",
+  "printedSuccessfully": "تمت الطباعة بنجاح",
+  "defaultShopName": "المتجر",
+  "columnProductName": "اسم المنتج",
+  "columnPrice": "السعر",
+  "columnTotal": "الإجمالي",
+  "scanToPay": "امسح للدفع",
+  "grandTotal": "الإجمالي الكلي",
+  "shopDetailsNotLoaded": "لم يتم تحميل بيانات المتجر",
+  "printReceipt": "طباعة الإيصال",
+  "scanBarcode": "مسح الباركود",
+  "alignBarcodeInFrame": "ضع الباركود داخل الإطار",
+  "settingsTitle": "الإعدادات",
+  "defaultShopFallback": "متجر التجزئة",
+  "managementSection": "الإدارة",
+  "productsTitle": "المنتجات",
+  "productsSubtitle": "إدارة المخزون والباركود",
+  "shopDetailsTitle": "بيانات المتجر",
+  "shopDetailsSubtitle": "تعديل بيانات النشاط والعنوان",
+  "hardwareSection": "الأجهزة",
+  "connectedToPrinter": "تم الاتصال بالطابعة",
+  "printDevice": "جهاز الطباعة",
+  "printerConnected": "الطابعة متصلة",
+  "noPrinterConnected": "لا توجد طابعة متصلة",
+  "connectedBadge": "متصل",
+  "printerConnectHelp": "لتوصيل جهاز جديد، اضغط أيقونة الإعدادات للاقتران من بلوتوث الهاتف، ثم ارجع واضغط تحديث.",
+  "productManagement": "إدارة المنتجات",
+  "scanOrEnterBarcode": "امسح أو أدخل الباركود",
+  "tapIconToScan": "اضغط الأيقونة لفتح ماسح الكاميرا",
+  "errorPrefix": "خطأ: {message}",
+  "@errorPrefix": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "noProductsFound": "لا توجد منتجات. أضف منتجات جديدة.",
+  "noProductsMatchSearch": "لا توجد منتجات مطابقة للبحث.",
+  "deleteProductTitle": "حذف المنتج",
+  "deleteProductConfirm": "هل تريد حذف {name}؟",
+  "@deleteProductConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "إلغاء",
+  "delete": "حذف",
+  "addProductTitle": "إضافة منتج",
+  "barcodeLabel": "الباركود",
+  "productNameLabel": "اسم المنتج",
+  "priceLabel": "السعر",
+  "productNameHint": "مثال: أرز بسمتي",
+  "addProductButton": "إضافة المنتج",
+  "barcodeAlreadyExists": "يوجد منتج بنفس الباركود \"{barcode}\" بالفعل.",
+  "@barcodeAlreadyExists": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "pleaseEnterBarcode": "يرجى إدخال الباركود",
+  "pleaseEnterName": "يرجى إدخال الاسم",
+  "pleaseEnterPrice": "يرجى إدخال السعر",
+  "pleaseEnterValidNumber": "يرجى إدخال رقم صحيح",
+  "priceCannotBeNegative": "لا يمكن أن يكون السعر سالباً",
+  "editProductTitle": "تعديل المنتج",
+  "saveChanges": "حفظ التغييرات",
+  "generalInformation": "بيانات عامة",
+  "shopDetailsHelp": "ستظهر هذه البيانات على الإيصالات الرقمية والمطبوعة.",
+  "shopNameLabel": "اسم المتجر",
+  "shopNameHint": "مثال: سوبر ماركت النور",
+  "requiredField": "مطلوب",
+  "addressLine1Label": "العنوان السطر الأول",
+  "addressLine1Hint": "شارع التحرير، وسط البلد",
+  "addressLine2Label": "العنوان السطر الثاني (اختياري)",
+  "addressLine2Hint": "القاهرة - 11511",
+  "phoneNumberLabel": "رقم الهاتف",
+  "phoneNumberHint": "01012345678",
+  "upiIdLabel": "معرّف الدفع",
+  "upiIdHint": "wallet@bank",
+  "receiptFooterLabel": "نص تذييل الإيصال",
+  "maxCharsHint": "بحد أقصى 150 حرفاً",
+  "receiptFooterHint": "شكراً لزيارتكم، نراكم قريباً",
+  "saveDetails": "حفظ البيانات",
+  "shopDetailsSaved": "تم حفظ بيانات المتجر",
+  "productNotFound": "المنتج غير موجود: {barcode}",
+  "@productNotFound": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "printerAutoConnectFailed": "تعذر الاتصال التلقائي بالطابعة",
+  "printerNotConnected": "الطابعة غير متصلة ولا توجد طابعة محفوظة",
+  "printFailed": "فشلت الطباعة: {details}",
+  "@printFailed": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "productAddedSuccessfully": "تمت إضافة المنتج بنجاح",
+  "productUpdatedSuccessfully": "تم تحديث المنتج بنجاح",
+  "productDeletedSuccessfully": "تم حذف المنتج بنجاح",
+  "noPairedDevices": "لا توجد أجهزة مقترنة.",
+  "couldNotConnectPaired": "تعذر الاتصال بأي جهاز مقترن.",
+  "failedConnectPrinter": "فشل الاتصال بالطابعة",
+  "bluetoothPermissionDenied": "تم رفض إذن البلوتوث"
+}

@@ -1,4 +1,9 @@
 import 'package:get_it/get_it.dart';
+
+import '../../features/billing/data/repositories/billing_repository_impl.dart';
+import '../../features/billing/domain/repositories/billing_repository.dart';
+import '../../features/billing/domain/usecases/billing_usecases.dart';
+import '../../features/billing/presentation/bloc/billing_bloc.dart';
 import '../../features/product/data/repositories/product_repository_impl.dart';
 import '../../features/product/domain/repositories/product_repository.dart';
 import '../../features/product/domain/usecases/product_usecases.dart';
@@ -38,6 +43,16 @@ Future<void> init() async {
     ),
   );
 
+  // Features - Billing
+  // Bloc
+  sl.registerFactory(
+    () => BillingBloc(
+      lookupProductByBarcodeUseCase: sl(),
+      ensurePrinterConnectedUseCase: sl(),
+      printReceiptUseCase: sl(),
+    ),
+  );
+
   // Use cases
   sl.registerLazySingleton(() => GetProductsUseCase(sl()));
   sl.registerLazySingleton(() => AddProductUseCase(sl()));
@@ -63,5 +78,19 @@ Future<void> init() async {
   // Features - Settings / Printer
   sl.registerLazySingleton<PrinterRepository>(
     () => PrinterRepositoryImpl(),
+  );
+
+  // Features - Billing
+  // Use cases
+  sl.registerLazySingleton(() => LookupProductByBarcodeUseCase(sl()));
+  sl.registerLazySingleton(() => EnsurePrinterConnectedUseCase(sl()));
+  sl.registerLazySingleton(() => PrintReceiptUseCase(sl()));
+
+  // Repository
+  sl.registerLazySingleton<BillingRepository>(
+    () => BillingRepositoryImpl(
+      productRepository: sl(),
+      printerRepository: sl(),
+    ),
   );
 }

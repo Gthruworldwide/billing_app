@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/usecases/product_usecases.dart';
 import '../../../../core/usecase/usecase.dart';
+import '../../../../core/l10n/app_message_keys.dart';
 
 part 'product_event.dart';
 part 'product_state.dart';
@@ -47,7 +48,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       (_) {
         emit(state.copyWith(
             status: ProductStatus.success,
-            message: 'Product added successfully'));
+            message: AppMessageKeys.productAddedSuccessfully));
         add(LoadProducts());
       },
     );
@@ -63,7 +64,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       (_) {
         emit(state.copyWith(
             status: ProductStatus.success,
-            message: 'Product updated successfully'));
+            message: AppMessageKeys.productUpdatedSuccessfully));
         add(LoadProducts());
       },
     );
@@ -79,7 +80,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       (_) {
         emit(state.copyWith(
             status: ProductStatus.success,
-            message: 'Product deleted successfully'));
+            message: AppMessageKeys.productDeletedSuccessfully));
         add(LoadProducts());
       },
     );

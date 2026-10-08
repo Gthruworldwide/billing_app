@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:app_settings/app_settings.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/l10n/localize_message.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../shop/presentation/bloc/shop_bloc.dart';
 import '../bloc/printer_bloc.dart';
 import '../bloc/printer_event.dart';
@@ -28,13 +30,13 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(AppLocalizations.of(context).settingsTitle,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.chevron_left,
+          icon: Icon(Icons.arrow_back,
               size: 28, color: Theme.of(context).primaryColor),
           onPressed: () => context.pop(),
         ),
@@ -49,7 +51,8 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
               child: BlocBuilder<ShopBloc, ShopState>(
                 builder: (context, state) {
-                  String shopName = 'Elite Groceries';
+                  String shopName =
+                      AppLocalizations.of(context).defaultShopFallback;
                   String initials = 'EG';
                   if (state is ShopLoaded && state.shop.name.isNotEmpty) {
                     shopName = state.shop.name;
@@ -98,20 +101,21 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 24),
 
             // Management Section
-            _buildSectionHeader('Management'),
+            _buildSectionHeader(
+                AppLocalizations.of(context).managementSection),
             _buildListGroup(
               children: [
                 _buildListItem(
                   icon: Icons.qr_code_scanner,
-                  title: 'Products',
-                  subtitle: 'Manage stock and barcodes',
+                  title: AppLocalizations.of(context).productsTitle,
+                  subtitle: AppLocalizations.of(context).productsSubtitle,
                   onTap: () => context.push('/products'),
                 ),
                 _buildDivider(),
                 _buildListItem(
                   icon: Icons.storefront,
-                  title: 'Shop Details',
-                  subtitle: 'Edit business info & address',
+                  title: AppLocalizations.of(context).shopDetailsTitle,
+                  subtitle: AppLocalizations.of(context).shopDetailsSubtitle,
                   onTap: () => context.push('/shop'),
                 ),
               ],
@@ -120,16 +124,18 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 24),
 
             // Hardware Section
-            _buildSectionHeader('Hardware'),
+            _buildSectionHeader(AppLocalizations.of(context).hardwareSection),
             BlocConsumer<PrinterBloc, PrinterState>(
               listener: (context, state) {
                 if (state.errorMessage != null) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(state.errorMessage!),
+                      content:
+                          Text(localizeMessage(context, state.errorMessage!)),
                       backgroundColor: Colors.red));
                 } else if (state.status == PrinterStatus.connected) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Connected to printer'),
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content:
+                          Text(AppLocalizations.of(context).connectedToPrinter),
                       backgroundColor: Colors.green));
                 }
               },
@@ -138,13 +144,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     _buildListItem(
                       icon: Icons.print,
-                      title: 'Print Device',
+                      title: AppLocalizations.of(context).printDevice,
                       subtitleWidget: Row(
                         children: [
                           Text(
                             state.connectedMac != null
-                                ? (state.connectedName ?? 'Printer connected')
-                                : 'No printer connected',
+                                ? (state.connectedName ??
+                                    AppLocalizations.of(context)
+                                        .printerConnected)
+                                : AppLocalizations.of(context)
+                                    .noPrinterConnected,
                             style: TextStyle(
                                 fontSize: 12, color: Colors.grey[500]),
                           ),
@@ -158,7 +167,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(color: Colors.teal[200]!)),
                               child: Text(
-                                'CONNECTED',
+                                AppLocalizations.of(context).connectedBadge,
                                 style: TextStyle(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
@@ -205,7 +214,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: Text(
-                "To connect a new device, tap on the Settings gear to pair in phone's Bluetooth settings, then return and hit Refresh.",
+                AppLocalizations.of(context).printerConnectHelp,
                 style: TextStyle(
                     fontSize: 11,
                     fontStyle: FontStyle.italic,
@@ -224,7 +233,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       child: Align(
-        alignment: Alignment.centerLeft,
+        alignment: AlignmentDirectional.centerStart,
         child: Text(
           title.toUpperCase(),
           style: const TextStyle(
@@ -250,7 +259,14 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildDivider() {
-    return Divider(height: 1, thickness: 1, color: Colors.grey[50], indent: 64);
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    return Divider(
+      height: 1,
+      thickness: 1,
+      color: Colors.grey[50],
+      indent: isRtl ? 0 : 64,
+      endIndent: isRtl ? 64 : 0,
+    );
   }
 
   Widget _buildListItem({
@@ -259,7 +275,7 @@ class _SettingsPageState extends State<SettingsPage> {
     String? subtitle,
     Widget? subtitleWidget,
     Widget? trailingWidget,
-    IconData? trailingIcon = Icons.chevron_right,
+    IconData? trailingIcon = Icons.arrow_forward_ios,
     VoidCallback? onTap,
   }) {
     return InkWell(

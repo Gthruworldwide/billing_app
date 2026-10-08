@@ -1,19 +1,27 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../../core/error/failure.dart';
+import '../../../../core/l10n/app_message_keys.dart';
+import '../../../../core/usecase/usecase.dart';
+import '../../../product/domain/entities/product.dart';
 import '../../domain/entities/cart_item.dart';
-import 'package:billing_app/features/product/domain/entities/product.dart';
-import 'package:billing_app/features/product/domain/usecases/product_usecases.dart';
-import '../../../../core/utils/printer_helper.dart';
-import '../../../../core/data/hive_database.dart';
+import '../../domain/entities/receipt.dart';
+import '../../domain/usecases/billing_usecases.dart';
 
 part 'billing_event.dart';
 part 'billing_state.dart';
 
 class BillingBloc extends Bloc<BillingEvent, BillingState> {
-  final GetProductByBarcodeUseCase getProductByBarcodeUseCase;
+  final LookupProductByBarcodeUseCase lookupProductByBarcodeUseCase;
+  final EnsurePrinterConnectedUseCase ensurePrinterConnectedUseCase;
+  final PrintReceiptUseCase printReceiptUseCase;
 
-  BillingBloc({required this.getProductByBarcodeUseCase})
-      : super(const BillingState()) {
+  BillingBloc({
+    required this.lookupProductByBarcodeUseCase,
+    required this.ensurePrinterConnectedUseCase,
+    required this.printReceiptUseCase,
+  }) : super(const BillingState()) {
     on<ScanBarcodeEvent>(_onScanBarcode);
     on<AddProductToCartEvent>(_onAddProductToCart);
     on<RemoveProductFromCartEvent>(_onRemoveProductFromCart);
@@ -24,10 +32,11 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
 
   Future<void> _onScanBarcode(
       ScanBarcodeEvent event, Emitter<BillingState> emit) async {
-    final result = await getProductByBarcodeUseCase(event.barcode);
+    final result = await lookupProductByBarcodeUseCase(event.barcode);
     result.fold(
-      (failure) =>
-          emit(state.copyWith(error: 'Product not found: ${event.barcode}')),
+      (failure) => emit(state.copyWith(
+          error: AppMessageKeys.withArg(
+              AppMessageKeys.productNotFound, event.barcode))),
       (product) {
         add(AddProductToCartEvent(product));
       },
@@ -84,55 +93,46 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
 
   Future<void> _onPrintReceipt(
       PrintReceiptEvent event, Emitter<BillingState> emit) async {
-    final printerHelper = PrinterHelper();
+    // Make sure a printer is reachable (auto-connect to the saved device).
+    Failure? connectionFailure;
+    final connection = await ensurePrinterConnectedUseCase(NoParams());
+    connection.fold((failure) => connectionFailure = failure, (_) {});
 
-    if (!printerHelper.isConnected) {
-      final savedMac = HiveDatabase.settingsBox.get('printer_mac');
-      if (savedMac != null) {
-        final connected = await printerHelper.connect(savedMac);
-        if (!connected) {
-          emit(state.copyWith(
-              error: 'Failed to auto-connect to printer!', clearError: false));
-          emit(state.copyWith(clearError: true));
-          return;
-        }
-      } else {
-        emit(state.copyWith(
-            error: 'Printer not connected & no saved printer found!',
-            clearError: false));
-        emit(state.copyWith(clearError: true));
-        return;
-      }
+    if (connectionFailure != null) {
+      emit(state.copyWith(error: connectionFailure!.message, clearError: false));
+      emit(state.copyWith(clearError: true));
+      return;
     }
 
     emit(state.copyWith(
         isPrinting: true, printSuccess: false, clearError: true));
 
-    try {
-      final items = state.cartItems
-          .map((item) => {
-                'name': item.product.name,
-                'qty': item.quantity,
-                'price': item.product.price,
-                'total': item.total,
-              })
-          .toList();
+    final receipt = ReceiptData(
+      shopName: event.shopName,
+      address1: event.address1,
+      address2: event.address2,
+      phone: event.phone,
+      footer: event.footer,
+      total: state.totalAmount,
+      items: state.cartItems
+          .map((item) => ReceiptItem(
+                name: item.product.name,
+                quantity: item.quantity,
+                price: item.product.price,
+                total: item.total,
+              ))
+          .toList(),
+    );
 
-      await printerHelper.printReceipt(
-          shopName: event.shopName,
-          address1: event.address1,
-          address2: event.address2,
-          phone: event.phone,
-          items: items,
-          total: state.totalAmount,
-          footer: event.footer);
-
-      emit(state.copyWith(isPrinting: false, printSuccess: true));
-    } catch (e) {
-      emit(state.copyWith(
-          isPrinting: false, error: 'Print failed: $e', clearError: false));
-      // Reset error instantly avoids sticky error
-      emit(state.copyWith(clearError: true));
-    }
+    final result = await printReceiptUseCase(receipt);
+    result.fold(
+      (failure) {
+        emit(state.copyWith(
+            isPrinting: false, error: failure.message, clearError: false));
+        // Reset the transient error so it does not stay "sticky".
+        emit(state.copyWith(clearError: true));
+      },
+      (_) => emit(state.copyWith(isPrinting: false, printSuccess: true)),
+    );
   }
 }

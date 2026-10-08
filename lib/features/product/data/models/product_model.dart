@@ -1,3 +1,7 @@
+// The entity/model pair intentionally redeclares the same fields so the Hive
+// code generator can annotate them; overriding is by design here.
+// ignore_for_file: overridden_fields
+
 import 'package:hive/hive.dart';
 import '../../domain/entities/product.dart';
 
