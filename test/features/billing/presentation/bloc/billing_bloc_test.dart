@@ -84,6 +84,36 @@ void main() {
     expect(state.totalAmount, 0.0);
   });
 
+  test('adding more than the tracked stock emits an error', () async {
+    const tracked =
+        Product(id: '2', name: 'أرز', barcode: '222', price: 5.0, stock: 3);
+
+    bloc.add(const AddProductToCartEvent(tracked));
+    bloc.add(const AddProductToCartEvent(tracked));
+    bloc.add(const AddProductToCartEvent(tracked));
+    await awaitState((s) => s.cartItems.first.quantity == 3);
+
+    bloc.add(const AddProductToCartEvent(tracked));
+    final error = await awaitState((s) => s.error != null);
+
+    // The cart must not change when the requested quantity exceeds stock.
+    expect(error.cartItems.first.quantity, 3);
+    expect(error.cartItems.first.product.stock, 3);
+  });
+
+  test('updating quantity beyond the tracked stock emits an error', () async {
+    const tracked =
+        Product(id: '3', name: 'شاي', barcode: '333', price: 7.0, stock: 2);
+
+    bloc.add(const AddProductToCartEvent(tracked));
+    await awaitState((s) => s.cartItems.isNotEmpty);
+
+    bloc.add(UpdateQuantityEvent(tracked.id, 5));
+    final error = await awaitState((s) => s.error != null);
+
+    expect(error.cartItems.first.quantity, 1);
+  });
+
   test('scanning an existing barcode adds the product to the cart', () async {
     repository.lookupResult = product;
 

@@ -1,5 +1,6 @@
 class AppMessageKeys {
   static const productNotFound = 'productNotFound';
+  static const quantityExceedsStock = 'quantityExceedsStock';
   static const printerAutoConnectFailed = 'printerAutoConnectFailed';
   static const printerNotConnected = 'printerNotConnected';
   static const printFailed = 'printFailed';

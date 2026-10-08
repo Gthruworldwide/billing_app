@@ -86,6 +86,27 @@
   "pleaseEnterPrice": "يرجى إدخال السعر",
   "pleaseEnterValidNumber": "يرجى إدخال رقم صحيح",
   "priceCannotBeNegative": "لا يمكن أن يكون السعر سالباً",
+  "stockLabel": "المخزون المتاح",
+  "stockHint": "0",
+  "pleaseEnterStock": "يرجى إدخال المخزون",
+  "invalidStock": "يرجى إدخال رقم صحيح",
+  "stockCannotBeNegative": "لا يمكن أن يكون المخزون سالباً",
+  "availableStock": "المتوفر: {stock}",
+  "@availableStock": {
+    "placeholders": {
+      "stock": {
+        "type": "int"
+      }
+    }
+  },
+  "quantityExceedsStock": "الكمية المطلوبة تتجاوز المتاح (المتوفر: {stock})",
+  "@quantityExceedsStock": {
+    "placeholders": {
+      "stock": {
+        "type": "int"
+      }
+    }
+  },
   "editProductTitle": "تعديل المنتج",
   "saveChanges": "حفظ التغييرات",
   "generalInformation": "بيانات عامة",

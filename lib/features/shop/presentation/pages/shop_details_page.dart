@@ -179,7 +179,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                       controller: _footerController,
                       hint: l10n.receiptFooterHint,
                       maxLines: 2,
-                      maxLength: 60,
+                      maxLength: 150,
                     ),
                   ],
                 ),

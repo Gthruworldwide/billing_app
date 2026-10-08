@@ -23,12 +23,14 @@ class _EditProductPageState extends State<EditProductPage> {
   final _formKey = GlobalKey<FormState>();
   late String _name;
   late double _price;
+  late int _stock;
 
   @override
   void initState() {
     super.initState();
     _name = widget.product.name;
     _price = widget.product.price;
+    _stock = widget.product.stock;
   }
 
   void _submit() {
@@ -40,6 +42,7 @@ class _EditProductPageState extends State<EditProductPage> {
         name: _name,
         barcode: widget.product.barcode,
         price: _price,
+        stock: _stock,
       );
 
       context.read<ProductBloc>().add(UpdateProduct(updatedProduct));
@@ -138,6 +141,24 @@ class _EditProductPageState extends State<EditProductPage> {
                           AppLocalizations.of(context).priceCannotBeNegative,
                     ),
                     onSaved: (value) => _price = double.parse(value!),
+                  ),
+                  const SizedBox(height: 24),
+
+                  InputLabel(text: AppLocalizations.of(context).stockLabel),
+
+                  TextFormField(
+                    initialValue: _stock.toString(),
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context).stockHint,
+                    ),
+                    validator: AppValidators.stock(
+                      empty: AppLocalizations.of(context).pleaseEnterStock,
+                      invalid: AppLocalizations.of(context).invalidStock,
+                      negative:
+                          AppLocalizations.of(context).stockCannotBeNegative,
+                    ),
+                    onSaved: (value) => _stock = int.parse(value!),
                   ),
                 ],
               ),

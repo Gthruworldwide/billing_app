@@ -45,16 +45,26 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
 
   void _onAddProductToCart(
       AddProductToCartEvent event, Emitter<BillingState> emit) {
+    final existingIndex = state.cartItems
+        .indexWhere((item) => item.product.id == event.product.id);
+
+    final newQuantity =
+        existingIndex >= 0 ? state.cartItems[existingIndex].quantity + 1 : 1;
+
+    if (_exceedsStock(event.product, newQuantity)) {
+      emit(state.copyWith(
+          error: _stockExceededKey(event.product), clearError: false));
+      return;
+    }
+
     // Clear error when adding
     final cleanState = state.copyWith(error: null);
 
-    final existingIndex = cleanState.cartItems
-        .indexWhere((item) => item.product.id == event.product.id);
     if (existingIndex >= 0) {
       final existingItem = cleanState.cartItems[existingIndex];
       final backendItems = List<CartItem>.from(cleanState.cartItems);
       backendItems[existingIndex] =
-          existingItem.copyWith(quantity: existingItem.quantity + 1);
+          existingItem.copyWith(quantity: newQuantity);
       emit(cleanState.copyWith(cartItems: backendItems, error: null));
     } else {
       final newItem = CartItem(product: event.product);
@@ -81,11 +91,27 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
     final index = state.cartItems
         .indexWhere((item) => item.product.id == event.productId);
     if (index >= 0) {
+      final item = state.cartItems[index];
+      if (_exceedsStock(item.product, event.quantity)) {
+        emit(state.copyWith(
+            error: _stockExceededKey(item.product), clearError: false));
+        return;
+      }
       final items = List<CartItem>.from(state.cartItems);
       items[index] = items[index].copyWith(quantity: event.quantity);
       emit(state.copyWith(cartItems: items));
     }
   }
+
+  /// Returns true when [requestedQuantity] exceeds the tracked stock of
+  /// [product]. A stock of 0 or less means the product is not tracked
+  /// (unlimited), so it never blocks the sale.
+  bool _exceedsStock(Product product, int requestedQuantity) {
+    return product.stock > 0 && requestedQuantity > product.stock;
+  }
+
+  String _stockExceededKey(Product product) => AppMessageKeys.withArg(
+      AppMessageKeys.quantityExceedsStock, '${product.stock}');
 
   void _onClearCart(ClearCartEvent event, Emitter<BillingState> emit) {
     emit(const BillingState());

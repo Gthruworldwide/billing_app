@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vibration/vibration.dart';
+
+import '../../../../core/utils/scan_utils.dart';
+import '../../../../core/widgets/scanner_frame.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class ScannerPage extends StatefulWidget {
@@ -31,11 +33,7 @@ class _ScannerPageState extends State<ScannerPage> {
     for (final barcode in barcodes) {
       if (barcode.rawValue != null) {
         _isScanned = true;
-        // Vibrate
-        final hasVibrator = await Vibration.hasVibrator();
-        if (hasVibrator == true) {
-          Vibration.vibrate();
-        }
+        await vibrateOnce();
 
         if (mounted) {
           context.pop(barcode.rawValue);
@@ -62,68 +60,17 @@ class _ScannerPageState extends State<ScannerPage> {
           MobileScanner(
             controller: controller,
             onDetect: _onDetect,
-            // Removed overlay property
           ),
-          // Simple border overlay manually
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.transparent, width: 0),
-            ),
-            child: Center(
-              child: Container(
-                width: 250,
-                height: 250,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.green, width: 2),
-                  // borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _corner(0),
-                          _corner(1),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _corner(3),
-                          _corner(2),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 40,
-            left: 0,
-            right: 0,
-            child: Text(
-              AppLocalizations.of(context).alignBarcodeInFrame,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+          Center(
+            child: ScannerFrame(
+              size: 250,
+              frameColor: Colors.green,
+              cornerColor: Colors.white,
+              radius: 0,
+              hintText: AppLocalizations.of(context).alignBarcodeInFrame,
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _corner(int index) {
-    return Container(
-      width: 15,
-      height: 15,
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border.all(color: Colors.white, width: 2),
       ),
     );
   }

@@ -193,6 +193,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get priceCannotBeNegative => 'لا يمكن أن يكون السعر سالباً';
 
   @override
+  String get stockLabel => 'المخزون المتاح';
+
+  @override
+  String get stockHint => '0';
+
+  @override
+  String get pleaseEnterStock => 'يرجى إدخال المخزون';
+
+  @override
+  String get invalidStock => 'يرجى إدخال رقم صحيح';
+
+  @override
+  String get stockCannotBeNegative => 'لا يمكن أن يكون المخزون سالباً';
+
+  @override
+  String availableStock(int stock) {
+    return 'المتوفر: $stock';
+  }
+
+  @override
+  String quantityExceedsStock(int stock) {
+    return 'الكمية المطلوبة تتجاوز المتاح (المتوفر: $stock)';
+  }
+
+  @override
   String get editProductTitle => 'تعديل المنتج';
 
   @override

@@ -442,6 +442,48 @@ abstract class AppLocalizations {
   /// **'لا يمكن أن يكون السعر سالباً'**
   String get priceCannotBeNegative;
 
+  /// No description provided for @stockLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'المخزون المتاح'**
+  String get stockLabel;
+
+  /// No description provided for @stockHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'0'**
+  String get stockHint;
+
+  /// No description provided for @pleaseEnterStock.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى إدخال المخزون'**
+  String get pleaseEnterStock;
+
+  /// No description provided for @invalidStock.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى إدخال رقم صحيح'**
+  String get invalidStock;
+
+  /// No description provided for @stockCannotBeNegative.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن أن يكون المخزون سالباً'**
+  String get stockCannotBeNegative;
+
+  /// No description provided for @availableStock.
+  ///
+  /// In ar, this message translates to:
+  /// **'المتوفر: {stock}'**
+  String availableStock(int stock);
+
+  /// No description provided for @quantityExceedsStock.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكمية المطلوبة تتجاوز المتاح (المتوفر: {stock})'**
+  String quantityExceedsStock(int stock);
+
   /// No description provided for @editProductTitle.
   ///
   /// In ar, this message translates to:

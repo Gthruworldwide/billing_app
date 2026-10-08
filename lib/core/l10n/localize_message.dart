@@ -10,6 +10,8 @@ String localizeMessage(BuildContext context, String raw) {
   switch (key) {
     case AppMessageKeys.productNotFound:
       return l10n.productNotFound(arg ?? '');
+    case AppMessageKeys.quantityExceedsStock:
+      return l10n.quantityExceedsStock(int.tryParse(arg ?? '') ?? 0);
     case AppMessageKeys.printerAutoConnectFailed:
       return l10n.printerAutoConnectFailed;
     case AppMessageKeys.printerNotConnected:

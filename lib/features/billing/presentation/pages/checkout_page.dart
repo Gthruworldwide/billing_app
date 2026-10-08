@@ -46,14 +46,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
             ),
           ),
           body: BlocConsumer<BillingBloc, BillingState>(
+            listenWhen: (previous, current) =>
+                !previous.printSuccess && current.printSuccess,
             listener: (context, state) {
               if (state.printSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content:
                         Text(AppLocalizations.of(context).printedSuccessfully),
                     backgroundColor: Colors.green));
-                // context.read<BillingBloc>().add(ClearCartEvent());
-                // context.go('/');
+                // The order is complete: clear the cart and go back to the
+                // scanning home screen.
+                context.read<BillingBloc>().add(ClearCartEvent());
+                context.go('/');
               }
             },
             builder: (context, billingState) {

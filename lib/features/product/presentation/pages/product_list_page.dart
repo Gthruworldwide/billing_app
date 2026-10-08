@@ -209,6 +209,17 @@ class _ProductListPageState extends State<ProductListPage> {
                                       fontWeight: FontWeight.w500,
                                       color: Colors.grey[600]),
                                 ),
+                                if (product.stock > 0) ...[
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    AppLocalizations.of(context)
+                                        .availableStock(product.stock),
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.teal[700]),
+                                  ),
+                                ],
                               ],
                             ),
                           ),
